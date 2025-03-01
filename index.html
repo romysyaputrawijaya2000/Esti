@@ -75,6 +75,16 @@
             font-family: 'Georgia', serif;
             color: #333;
             white-space: pre-line;
+            position: relative;
+        }
+        .flower {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            width: 80px;
+            height: 80px;
+            transition: transform 0.5s ease-in-out;
         }
     </style>
 </head>
@@ -98,6 +108,7 @@
                     <div class="paper" id="paper">
                         <p class="message" id="message"></p>
                         <p class="signature" id="signature"></p>
+                        <img class="flower" id="flower" src="nature.png" alt="flower">
                     </div>
                 </div>
             </div>
@@ -108,8 +119,7 @@
     
     <script>
         let isOpened = false;
-        let messageText = "Esti sayang,\n\nAku sadar aku telah banyak berbuat salah dan sering sibuk sehingga mencuekin ayang. " +
-            "Maafkan aku ya, aku berjanji akan berusaha menjadi lebih baik untukmu. I Love U sayangku. ❤️";
+        let messageText = "Esti sayang,\n\nAku sadar telah banyak berbuat kesalahan dan sering kali sibuk hingga kurang memberi perhatian pada sayang. Maafkan aku, ya. Aku berjanji akan berusaha menjadi lebih baik untukmu. Aku sayang kamu. ❤️";
         
         function typeMessage(text, elementId, speed, callback) {
             let element = document.getElementById(elementId);
@@ -131,25 +141,36 @@
             let modal = new bootstrap.Modal(document.getElementById('messageModal'));
             let closeButton = document.getElementById('closeButton');
             let music = document.getElementById('romanticMusic');
+            let flower = document.getElementById('flower');
+
             closeButton.disabled = true; // Nonaktifkan tombol close saat mengetik
+            
+            music.currentTime = 0; // Set audio ke awal
             music.play(); // Mulai lagu saat surat dibuka
 
             if (!isOpened) {
                 typeMessage(messageText, "message", 100, function() {
                     document.getElementById("signature").innerHTML = "Pacarmu, Romy";
                     closeButton.disabled = false; // Aktifkan tombol close setelah selesai mengetik
-                    music.pause(); // Matikan lagu setelah selesai mengetik
-                    music.currentTime = 0;
+                    flower.style.transform = "translateX(-50%) scale(1)"; // Munculkan bunga setelah teks selesai
                 });
                 isOpened = true;
             } else {
                 document.getElementById("message").innerHTML = messageText;
                 document.getElementById("signature").innerHTML = "Pacarmu, Romy";
                 closeButton.disabled = false;
-                music.pause(); // Pastikan musik berhenti jika modal ditutup
-                music.currentTime = 0;
+                flower.style.transform = "translateX(-50%) scale(1)";
             }
             modal.show();
+        });
+
+        document.getElementById('messageModal').addEventListener('hidden.bs.modal', function () {
+            let music = document.getElementById('romanticMusic');
+            let flower = document.getElementById('flower');
+
+            music.pause(); // Hentikan musik saat modal ditutup
+            music.currentTime = 0; // Kembalikan musik ke awal
+            flower.style.transform = "translateX(-50%) scale(0)"; // Sembunyikan bunga lagi saat modal ditutup
         });
     </script>
 </body>
